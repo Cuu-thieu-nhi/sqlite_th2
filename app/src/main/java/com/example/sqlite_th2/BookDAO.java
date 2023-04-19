@@ -128,5 +128,64 @@ public class BookDAO {
         return books;
     }
 
+    public List<Book> searchByPublisher(String pub) {
+        open();
+        List<Book> books = new ArrayList<>();
+
+        String[] columns = {BookDatabaseHelper.COLUMN_ID, BookDatabaseHelper.COLUMN_NAME, BookDatabaseHelper.COLUMN_AUTHOR, BookDatabaseHelper.COLUMN_RELEASE_DATE, BookDatabaseHelper.COLUMN_PUBLISHER, BookDatabaseHelper.COLUMN_PRICE};
+        String selection = BookDatabaseHelper.COLUMN_PUBLISHER + "=?";
+        String[] selectionArgs = {pub};
+
+        Cursor cursor = db.query(BookDatabaseHelper.TABLE_NAME, columns, selection, selectionArgs, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(0);
+                String name = cursor.getString(1);
+                String author = cursor.getString(2);
+                String releaseDate = cursor.getString(3);
+                String publisher = cursor.getString(4);
+                double price = cursor.getDouble(5);
+
+                Book book = new Book(id, name, author, releaseDate, publisher, price);
+                books.add(book);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        close();
+        return books;
+    }
+
+    public List<Book> searchByPriceAndPublisher(double minPrice, double maxPrice, String publisher) {
+        open();
+        List<Book> books = new ArrayList<>();
+
+        String[] columns = {BookDatabaseHelper.COLUMN_ID, BookDatabaseHelper.COLUMN_NAME, BookDatabaseHelper.COLUMN_AUTHOR, BookDatabaseHelper.COLUMN_RELEASE_DATE, BookDatabaseHelper.COLUMN_PUBLISHER, BookDatabaseHelper.COLUMN_PRICE};
+        String selection = BookDatabaseHelper.COLUMN_PRICE + " >= ? AND " + BookDatabaseHelper.COLUMN_PRICE + " <= ? AND " +
+                BookDatabaseHelper.COLUMN_PUBLISHER + "=?";
+        String[] selectionArgs = {String.valueOf(minPrice), String.valueOf(maxPrice), publisher};
+
+        Cursor cursor = db.query(BookDatabaseHelper.TABLE_NAME, columns, selection, selectionArgs, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(0);
+                String name = cursor.getString(1);
+                String author = cursor.getString(2);
+                String releaseDate = cursor.getString(3);
+                String publisherr = cursor.getString(4);
+                double price = cursor.getDouble(5);
+
+                Book book = new Book(id, name, author, releaseDate, publisherr, price);
+                books.add(book);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        close();
+        return books;
+    }
+
 
 }
